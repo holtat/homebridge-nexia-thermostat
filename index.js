@@ -163,6 +163,14 @@ NexiaThermostat.prototype = {
           return;
         } 
         that._currentData = parse;
+        var thisTStat = that._findTStatInNexiaResponse();
+
+        var f = that._findCurrentTemp(thisTStat);
+        var c = (f-32.0) / 1.8;
+    		that.service.setCharacteristic(Characteristic.CurrentTemperature, c);
+    		that.service.setCharacteristic(Characteristic.CurrentHeatingCoolingState, _findCurrentState(thisTStat));
+    		that.service.setCharacteristic(Characteristic.TargetHeatingCoolingState, _findTargetState(thisTStat));
+
         return;
       }).catch(function(err) {
         that.log("Error from get: " + err);
