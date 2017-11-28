@@ -194,7 +194,7 @@ NexiaThermostat.prototype = {
       // should search settings for hvac_mode and not just
       // assume settings[0]
 
-      var url = thisTStat.settings[0]._links.self.href + "/";
+      var url = thisTStat.settings[0]._links.self.href;
       return this._post(url,{"value":this.ConfigKeyForheatingCoolingState(value)})
         .then(function (body) {
           callback(null,value);
@@ -202,6 +202,7 @@ NexiaThermostat.prototype = {
           that.log(body);
         }).catch(function(err) {
           that.log("Error from _post to :" + url +  ":  " + err);
+          callback("Error from _post to :" + url +  ":  " + err);
         });
     },
 
