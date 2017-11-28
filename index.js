@@ -208,7 +208,7 @@ NexiaThermostat.prototype = {
         }
         return zone_zero.temperature;
     } else if (thisTStat.hasOwnProperty("features")) {
-        var features_node = thisTStat.zones.features[0];
+        var features_node = thisTStat.features[0];
         if(current_state === Characteristic.TargetHeatingCoolingState.COOL && features_node.hasOwnProperty("setpoint_cool")) {
            return features_node.setpoint_cool;
         }
