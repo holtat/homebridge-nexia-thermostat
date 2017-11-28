@@ -142,9 +142,9 @@ NexiaThermostat.prototype = {
       .then(function (body) {
         this._currentData = JSON.parse(body);
         return;
-    }).catch(function(err) {
+      }).catch(function(err) {
         this.log("Error from get: " + err);
-    };
+     });
   },
   _get: function(url) {
     return rp({
