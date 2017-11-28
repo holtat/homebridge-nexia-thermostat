@@ -1,6 +1,8 @@
 var Service, Characteristic;
 var rp = require('request-promise')
 
+
+
 module.exports = function(homebridge){
   Service = homebridge.hap.Service;
   Characteristic = homebridge.hap.Characteristic;
@@ -140,7 +142,9 @@ NexiaThermostat.prototype = {
       .then(function (body) {
         this._currentData = JSON.parse(body);
         return;
-    })
+    }).catch(function(err) {
+        this.log("Error from get: " + err);
+    };
   },
   _get: function(url) {
     return rp({
