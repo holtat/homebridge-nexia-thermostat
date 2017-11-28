@@ -257,8 +257,10 @@ NexiaThermostat.prototype = {
       this.log("JSON:" + json_struct); 
       return this._put(url,json_struct)
         .then(function (body) {
-          callback(null,value);
-          that.log("Set State!");
+          if (callback) { 
+            callback(null,value);
+          }
+          that.log("Set Temp!");
           that.log(body);
           // TODO -- the body may be able to reused for refreshData to avoid hitting
           // the server again
@@ -285,7 +287,7 @@ NexiaThermostat.prototype = {
           callback(null,value);
           that.log("Set State!");
           that.log(body);
-          return that._setTemp(thisTStat, c, callback);
+          return that._setTemp(thisTStat, c);
         }).catch(function(err) {
           that.log("Error from _post to :" + url +  ":  " + err);
         });
