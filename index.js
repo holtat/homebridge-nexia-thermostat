@@ -39,8 +39,8 @@ NexiaThermostat.prototype = {
       this.log("Request made to: %s", requestUrl);
 			if (!err && response.statusCode == 200) {
 				this.log("response success");
-        var data = JSON.parse(body);
         this.log(body);
+        var data = JSON.parse(body);
         this.log(data);
 
         var rawState = data.result._links.child[0].data.items[this.thermostatIndex].zones[0].current_zone_mode;
@@ -118,7 +118,9 @@ NexiaThermostat.prototype = {
 		}, function(err, response, body) {
 			if (!err && response.statusCode == 200) {
 				this.log("response success");
-				var data = JSON.parse(body);
+				this.log(body);
+        var data = JSON.parse(body);
+				this.log(data);
         var systemStatus = data.result._links.child[0].data.items[this.thermostatIndex].system_status;
         var f = data.result._links.child[0].data.items[this.thermostatIndex].zones[0].temperature;
         if(systemStatus === "Cooling") {
