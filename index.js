@@ -1,5 +1,6 @@
 var Service, Characteristic;
-var request = require("request");
+var request = require("request").debug = true;
+
 
 module.exports = function(homebridge){
   Service = homebridge.hap.Service;
@@ -40,6 +41,9 @@ NexiaThermostat.prototype = {
 			if (!err && response.statusCode == 200) {
 				this.log("response success");
         var data = JSON.parse(body);
+        this.log(body);
+        this.log(data);
+
         var rawState = data.result._links.child[0].data.items[this.thermostatIndex].zones[0].current_zone_mode;
         var characteristic = Characteristic.CurrentHeatingCoolingState.OFF;
         if (rawState === "COOL") {
