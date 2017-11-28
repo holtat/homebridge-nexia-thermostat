@@ -83,6 +83,9 @@ NexiaThermostat.prototype = {
     if (!this._currentData) { 
        callback("setTargetTemperature: data not yet loaded");
     }
+    // TODO: We need to debounce this so there is a 3s delay before calling
+    // this in case they are sliding
+    
     var thisTStat = this._findTStatInNexiaResponse();
     return this._setTemp(thisTStat, value, callback);
   },
