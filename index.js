@@ -157,14 +157,14 @@ NexiaThermostat.prototype = {
   },
   _get: function(url) {
     return rp({
-      url: this._calculateUrl(url),
+      uri: this._calculateUrl(url),
       headers: {'X-MobileId':  this.xMobileId, 'X-ApiKey': this.xApiKey}
     }) 
   },
   _post: function(url, body) {
     return rp({
       method: 'POST',
-      url: this._calculateUrl(url),
+      uri: this._calculateUrl(url),
       headers: {'X-MobileId':  this.xMobileId, 'X-ApiKey': this.xApiKey},
       body: body,
       json: true
@@ -173,7 +173,7 @@ NexiaThermostat.prototype = {
   _put: function(url, body) {
     return rp({
       method: 'PUT',
-      url: this._calculateUrl(url),
+      uri: this._calculateUrl(url),
       headers: {'X-MobileId':  this.xMobileId, 'X-ApiKey': this.xApiKey},
       body: body,
       json: true
@@ -195,7 +195,7 @@ NexiaThermostat.prototype = {
       // assume settings[0]
 
       var url = thisTStat.settings[0]._links.self.href + "/";
-      return      this._post(url,{"value":this.ConfigKeyForheatingCoolingState(value)})
+      return this._post(url,{"value":this.ConfigKeyForheatingCoolingState(value)})
         .then(function (body) {
           callback(null,value);
           that.log("Set State!");
