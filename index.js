@@ -273,6 +273,8 @@ NexiaThermostat.prototype = {
       var that = this;
       // should search settings for hvac_mode and not just
       // assume settings[0]
+      var f = this._findCurrentSetPoint(thisTStat);
+      var c = (f-32.0) / 1.8;
 
       var url = thisTStat.settings[0]._links.self.href;
       var txt_value = this.ConfigKeyForheatingCoolingState(value);
@@ -283,9 +285,7 @@ NexiaThermostat.prototype = {
           callback(null,value);
           that.log("Set State!");
           that.log(body);
-// TODO -- the body may be able to reused for refreshData to avoid hitting
-          // the server again
-          that._refreshData();
+          return that._setTemp(thisTStat, c, callback);
         }).catch(function(err) {
           that.log("Error from _post to :" + url +  ":  " + err);
         });
