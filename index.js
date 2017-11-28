@@ -149,13 +149,13 @@ NexiaThermostat.prototype = {
   _get: function(url) {
     return rp({
       url: this.apiroute + url,
-      headers: {'X-MobileId': this.mobile_id, 'X-ApiKey': this.api_key}
+      headers: {'X-MobileId':  this.xMobileId, 'X-ApiKey': this.xApiKey}
     }) 
   },
   _post: function(url, json) {
     return rp({
       url: this.apiroute + url,
-      headers: {'X-MobileId': this.mobile_id, 'X-ApiKey': this.api_key},
+      headers: {'X-MobileId':  this.xMobileId, 'X-ApiKey': this.xApiKey},
       json: json
     }) 
   },
