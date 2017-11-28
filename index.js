@@ -107,7 +107,7 @@ NexiaThermostat.prototype = {
 
 		this.service
 			.getCharacteristic(Characteristic.TargetHeatingCoolingState)
-			.on('get', this.getTargetHeatingCoolingState.bind(this))
+			.on('get', this.getCurrentHeatingCoolingState.bind(this))
 			.on('set', this.setTargetHeatingCoolingState.bind(this));
 
 		this.service
