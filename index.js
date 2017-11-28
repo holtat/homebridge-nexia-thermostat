@@ -166,9 +166,10 @@ NexiaThermostat.prototype = {
         var thisTStat = that._findTStatInNexiaResponse();
 
         var f = that._findCurrentTemp(thisTStat);
+        that.log("Characteristic.CurrentTemperature (F):" + f); 
         var c = (f-32.0) / 1.8;
 
-        that.log("Characteristic.CurrentTemperature:" + c); 
+        that.log("Characteristic.CurrentTemperature (C):" + c); 
     		that.service.setCharacteristic(Characteristic.CurrentTemperature, c);
     		that.service.setCharacteristic(Characteristic.CurrentHeatingCoolingState, that._findCurrentState(thisTStat));
     		that.service.setCharacteristic(Characteristic.TargetHeatingCoolingState, that._findTargetState(thisTStat));
