@@ -139,13 +139,14 @@ NexiaThermostat.prototype = {
 	},
 
   _refreshData: function() {
+    var that = this;
 		this._get("houses/" + this.houseId)
       .then(function (body) {
-        this.log("Refreshed Data!");
-        this._currentData = JSON.parse(body);
+        that.log("Refreshed Data!");
+        that._currentData = JSON.parse(body);
         return;
       }).catch(function(err) {
-        this.log("Error from get: " + err);
+        that.log("Error from get: " + err);
      });
   },
   _get: function(url) {
