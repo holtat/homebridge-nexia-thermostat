@@ -140,6 +140,7 @@ NexiaThermostat.prototype = {
   _refreshData: function() {
 		this._get("houses/" + this.houseId)
       .then(function (body) {
+        this.log("Refreshed Data!");
         this._currentData = JSON.parse(body);
         return;
       }).catch(function(err) {
