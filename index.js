@@ -41,6 +41,7 @@ NexiaThermostat.prototype = {
 				this.log("response success");
         this.log(body);
         var data = JSON.parse(body);
+        var thisTStat = this._findTStatInNexiaResponse(data);
         this.log(data);
 
         var rawState = data.result._links.child[0].data.items[this.thermostatIndex].zones[0].current_zone_mode;
@@ -68,6 +69,7 @@ NexiaThermostat.prototype = {
 			if (!err && response.statusCode == 200) {
 				this.log("response success");
 				var data = JSON.parse(body);
+        var thisTStat = this._findTStatInNexiaResponse(data);
         var rawState = data.result._links.child[0].data.items[this.thermostatIndex].zones[0].current_zone_mode;
 
         var characteristic = Characteristic.TargetHeatingCoolingState.OFF;
@@ -101,6 +103,7 @@ NexiaThermostat.prototype = {
 			if (!err && response.statusCode == 200) {
 				this.log("response success");
 				var data = JSON.parse(body);
+        var thisTStat = this._findTStatInNexiaResponse(data);
         var f = data.result._links.child[0].data.items[this.thermostatIndex].zones[0].temperature;
         var c = (f-32.0) / 1.8;
         callback(null, c);
@@ -120,6 +123,7 @@ NexiaThermostat.prototype = {
 				this.log("response success");
 				this.log(body);
         var data = JSON.parse(body);
+        var thisTStat = this._findTStatInNexiaResponse(data);
 				this.log(data);
         var systemStatus = data.result._links.child[0].data.items[this.thermostatIndex].system_status;
         var f = data.result._links.child[0].data.items[this.thermostatIndex].zones[0].temperature;
@@ -158,6 +162,7 @@ NexiaThermostat.prototype = {
 			if (!err && response.statusCode == 200) {
 				this.log("response success");
 				var data = JSON.parse(body);
+        var thisTStat = this._findTStatInNexiaResponse(data);
         var currentCool = data.result._links.child[0].data.items[this.thermostatIndex].zones[0].setpoints.cool;
         var currentCoolC = (currentCool-32.0) / 1.8;
         callback(null,  currentCoolC);
@@ -195,7 +200,8 @@ NexiaThermostat.prototype = {
 			if (!err && response.statusCode == 200) {
 				this.log("response success");
 				var data = JSON.parse(body);
-        var currentHeat = data.result._links.child[0].data.items[this.thermostatIndex].zones[0].setpoints.heat;
+        var thisTStat = this._findTStatInNexiaResponse(data);
+        var currentHeat = thisTStat.zones[0].setpoints.heat;
         var currentHeatC = (currentHeat-32.0) / 1.8;
         callback(null, currentHeatC);
 			} else {
@@ -301,5 +307,23 @@ NexiaThermostat.prototype = {
 			.getCharacteristic(Characteristic.Name)
 			.on('get', this.getName.bind(this));
 		return [informationService, this.service];
-	}
+	},
+
+  _findTStatInNexiaResponse: function(data) {
+      var all_items = data.result._links.child[0].data.items;
+      var want_tStatId = this.thermostatIndex;
+      var tStatId = -1;
+
+      for(var index = 0; index < all_items.length; index++ ) {
+        if (all_items[index].type.indexOf('thermostat') > -1) {
+           tStatId++;  
+           if (tStatId === want_tStatId) {
+              console.log(all_items[index]);
+              return all_items[index];
+           } 
+        }
+      }
+
+      throw new Error("The tStatId is missing");
+  }
 };
