@@ -175,7 +175,6 @@ NexiaThermostat.prototype = {
         that.log("Characteristic.TargetTemperature (F):" + f_setpoint); 
         that.log("Characteristic.TargetTemperature (C):" + c_setpoint); 
 
-
     		that.service.setCharacteristic(Characteristic.CurrentTemperature, c_current);
     		that.service.setCharacteristic(Characteristic.TargetTemperature, c_setpoint);
     		that.service.setCharacteristic(Characteristic.CurrentHeatingCoolingState, that._findCurrentState(thisTStat));
@@ -244,6 +243,7 @@ NexiaThermostat.prototype = {
           callback(null,value);
           that.log("Set State!");
           that.log(body);
+          that._refreshData();
         }).catch(function(err) {
           that.log("Error from _put to :" + url +  ":  " + err);
         });
@@ -264,6 +264,7 @@ NexiaThermostat.prototype = {
           callback(null,value);
           that.log("Set State!");
           that.log(body);
+          that._refreshData();
         }).catch(function(err) {
           that.log("Error from _post to :" + url +  ":  " + err);
         });
