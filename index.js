@@ -287,6 +287,9 @@ NexiaThermostat.prototype = {
           callback(null,value);
           that.log("Set State!");
           that.log(body);
+          // Since data is out of sync (HVAC state is wrong the set temp will fail)
+          // If we can use the body of the response to update the current Data
+          // this will fix it
           return that._setTemp(thisTStat, c);
         }).catch(function(err) {
           that.log("Error from _post to :" + url +  ":  " + err);
