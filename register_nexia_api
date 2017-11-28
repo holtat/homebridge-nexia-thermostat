@@ -1,0 +1,31 @@
+#!/usr/bin/env node
+
+var program = require('commander');
+var rp = require('request-promise')
+var base_url = "https://www.mynexia.com/mobile/"
+var activate_endpoint = "activate"
+
+program
+    .version('0.1')
+    .description('Nexia API Registration Tool')
+    .option('-a, --activation_code <n>', 'The 12 Digit Activation Code from https://www.mynexia.com/phones')
+    .parse(process.argv);
+
+if (program.activation_code.length) {
+    require('request-promise').debug = true
+    rp.post({
+            url: base_url + activate_endpoint,
+            json: {
+                "activation_code": program.activation_code
+            }
+        })
+        .then(function(data) {
+            console.log("Your xMobileId and xApiKey is below:");
+            console.log(JSON.stringify({
+                "xMobileId": data.result.mobile_id,
+                "xApiKey": data.result.api_key
+            }));
+        });
+} else {
+    program.outputHelp();
+}
