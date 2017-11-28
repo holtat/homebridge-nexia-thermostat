@@ -174,7 +174,6 @@ NexiaThermostat.prototype = {
   _findTStatInNexiaResponse: function() {
       var data = this._currentData;
 
-      this.log(data);
       var all_items = data.result._links.child[0].data.items;
       var want_tStatId = this.thermostatIndex;
       var tStatId = -1;
