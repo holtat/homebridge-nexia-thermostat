@@ -147,7 +147,7 @@ NexiaThermostat.prototype = {
 
     this._refreshData();
 
-    setInterval(this._refreshData.bind(this), 30 * 1000);
+    setInterval(this._refreshData.bind(this), 90 * 1000);
 
 		return [informationService, this.service];
 	},
