@@ -180,7 +180,10 @@ NexiaThermostat.prototype = {
  
     _setHVACMode: function(thisTStat, value, callback) {
       var that = this;
-      var url = thisTStat.settings._links.self.href;
+      // should search settings for hvac_mode and not just
+      // assume settings[0]
+
+      var url = thisTStat.settings[0]._links.self.href;
       return      this._put(url,{"value":this.ConfigKeyForheatingCoolingState(value)})
         .then(function (body) {
           callback(null,value);
@@ -217,6 +220,8 @@ NexiaThermostat.prototype = {
     if (thisTStat.hasOwnProperty("zones")) {
       rawState = thisTStat.zones[0].current_zone_mode;
     } else if (thisTStat.hasOwnProperty("settings")) {
+      // should search settings for hvac_mode and not just
+      // assume settings[0]
       rawState = thisTStat.settings[0].current_value;
     } else {
       this.log("no state");
