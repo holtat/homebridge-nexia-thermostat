@@ -184,7 +184,7 @@ NexiaThermostat.prototype = {
     this.log("_calculateUrl in: " + url);
 
     var newurl = ( url.indexOf('http://') == 0 || url.indexOf('https://') == 0  ) ? url : (this.apiroute + url);
-    this.log("_calculateUrl our: " + newurl);
+    this.log("_calculateUrl out: " + newurl);
 
     return newurl;
   },
