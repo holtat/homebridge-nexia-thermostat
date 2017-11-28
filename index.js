@@ -44,11 +44,11 @@ NexiaThermostat.prototype = {
 	},
   setTargetHeatingCoolingState: function(value, callback) {
 		this.log("setTargetHeatingCoolingState");
-		if(value === undefined) {
-			callback(); //Some stuff call this without value doing shit with the rest
-		} else {
-			callback(null);
-		}
+	  if (!this._currentData) { 
+       callback("setTargetHeatingCoolingState: data not yet loaded");
+    }
+    var thisTStat = this._findTStatInNexiaResponse();
+    return this._setHVACMode(thisTStat, value, callback);
 	},
 	getCurrentTemperature: function(callback) {
 		this.log("getCurrentTemperature");
@@ -158,17 +158,38 @@ NexiaThermostat.prototype = {
   },
   _get: function(url) {
     return rp({
-      url: this.apiroute + url,
+      url: (url.match(/::/) ? url : this.apiroute + url),
       headers: {'X-MobileId':  this.xMobileId, 'X-ApiKey': this.xApiKey}
     }) 
   },
   _post: function(url, json) {
     return rp({
-      url: this.apiroute + url,
+      url: (url.match(/::/) ? url : this.apiroute + url),
       headers: {'X-MobileId':  this.xMobileId, 'X-ApiKey': this.xApiKey},
       json: json
     }) 
   },
+  _put: function(url, json) {
+    return rp({
+      url: (url.match(/::/) ? url : this.apiroute + url),
+      headers: {'X-MobileId':  this.xMobileId, 'X-ApiKey': this.xApiKey},
+      json: json
+    }) 
+  },
+
+ 
+    _setHVACMode: function(thisTStat, value, callback) {
+      var that = this;
+      var url = thisTStat.settings._links.self.href;
+      return      this._put(url,{"value":this.ConfigKeyForheatingCoolingState(value)})
+        .then(function (body) {
+          callback(null,value);
+          that.log("Set State!");
+          that.log(body);
+        }).catch(function(err) {
+          that.log("Error from _put to :" + url +  ":  " + err);
+        });
+    };
 
 
   _findTStatInNexiaResponse: function() {
@@ -244,6 +265,18 @@ NexiaThermostat.prototype = {
     return 0; /* should error */
   },
 
+  ConfigKeyForheatingCoolingState: function(state) {
+    switch (state) {
+      case Characteristic.TargetHeatingCoolingState.AUTO:
+        return "heat-cool";
+      case Characteristic.TargetHeatingCoolingState.COOL:
+        return "cool";
+      case Characteristic.TargetHeatingCoolingState.HEAT:
+        return "heat";
+      default:
+        return "off";
+    }
+  }
 
   heatingCoolingStateForConfigKey: function(configKey) {
     switch (configKey.toLowerCase()) {
