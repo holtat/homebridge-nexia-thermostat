@@ -260,7 +260,9 @@ NexiaThermostat.prototype = {
           callback(null,value);
           that.log("Set State!");
           that.log(body);
-          //that._refreshData() -- LOOPS!
+          // TODO -- the body may be able to reused for refreshData to avoid hitting
+          // the server again
+          that._refreshData();
         }).catch(function(err) {
           that.log("Error from _put to :" + url +  ":  " + err);
         });
@@ -281,7 +283,9 @@ NexiaThermostat.prototype = {
           callback(null,value);
           that.log("Set State!");
           that.log(body);
-          //that._refreshData() -- LOOPS!
+// TODO -- the body may be able to reused for refreshData to avoid hitting
+          // the server again
+          that._refreshData();
         }).catch(function(err) {
           that.log("Error from _post to :" + url +  ":  " + err);
         });
