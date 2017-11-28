@@ -162,18 +162,22 @@ NexiaThermostat.prototype = {
       headers: {'X-MobileId':  this.xMobileId, 'X-ApiKey': this.xApiKey}
     }) 
   },
-  _post: function(url, json) {
+  _post: function(url, body) {
     return rp({
+      method: 'POST',
       url: (url.match(/::/) ? url : this.apiroute + url),
       headers: {'X-MobileId':  this.xMobileId, 'X-ApiKey': this.xApiKey},
-      json: json
+      body: body,
+      json: true
     }) 
   },
-  _put: function(url, json) {
+  _put: function(url, body) {
     return rp({
+      method: 'PUT',
       url: (url.match(/::/) ? url : this.apiroute + url),
       headers: {'X-MobileId':  this.xMobileId, 'X-ApiKey': this.xApiKey},
-      json: json
+      body: body,
+      json: true
     }) 
   },
 
