@@ -23,6 +23,7 @@ function NexiaThermostat(log, config) {
   this.serialNumber = config.serialNumber;
 	this.service = new Service.Thermostat(this.name);
   this.TStatData = {};
+  this._currentData = {};
 }
 
 NexiaThermostat.prototype = {
