@@ -163,22 +163,39 @@ NexiaThermostat.prototype = {
           return;
         } 
         that._currentData = parse;
-        var thisTStat = that._findTStatInNexiaResponse();
 
-        var f_current = that._findCurrentTemp(thisTStat);
-        var c_current = (f_current-32.0) / 1.8;
-        that.log("Characteristic.CurrentTemperature (F):" + f_current); 
-        that.log("Characteristic.CurrentTemperature (C):" + c_current); 
-    
-        var f_setpoint = that._findCurrentSetPoint(thisTStat);
-        var c_setpoint = (f_setpoint-32.0) / 1.8;
-        that.log("Characteristic.TargetTemperature (F):" + f_setpoint); 
-        that.log("Characteristic.TargetTemperature (C):" + c_setpoint); 
+        that._updateData().bind(that);
 
-    		that.service.setCharacteristic(Characteristic.CurrentTemperature, c_current);
-    		that.service.setCharacteristic(Characteristic.TargetTemperature, c_setpoint);
-    		that.service.setCharacteristic(Characteristic.CurrentHeatingCoolingState, that._findCurrentState(thisTStat));
-    		that.service.setCharacteristic(Characteristic.TargetHeatingCoolingState, that._findTargetState(thisTStat));
+        /* TODO */
+
+/*
+ *
+ *
+ *
+ * service
+ *       .getCharacteristic(Characteristic.TargetTemperature)
+ *             .setProps({
+ *                     minValue: minTemperature,
+ *                             maxValue: maxTemperature,
+ *                                     minStep: 1
+ *                                           });
+ *
+ *                                               service
+ *                                                     .getCharacteristic(Characteristic.CurrentTemperature)
+ *                                                           .setProps({
+ *                                                                   minValue: minTemperature,
+ *                                                                           maxValue: maxTemperature,
+ *                                                                                   minStep: 1
+ *                                                                                         });
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
 
         return;
       }).catch(function(err) {
@@ -361,6 +378,14 @@ NexiaThermostat.prototype = {
     this.log("no state");
     return 0; /* should error */
   },
+
+_updateData: function() {
+  this.service.getCharacteristic(Characteristic.CurrentTemperature).getValue();
+  this.service.getCharacteristic(Characteristic.TargetTemperature).getValue();
+  this.service.getCharacteristic(Characteristic.CurrentHeatingCoolingState).getValue();
+  this.service.getCharacteristic(Characteristic.TargetHeatingCoolingState).getValue();
+  return 1;
+},
 
   ConfigKeyForheatingCoolingState: function(state) {
     switch (state) {
