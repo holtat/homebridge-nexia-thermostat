@@ -80,7 +80,11 @@ NexiaThermostat.prototype = {
 	},
   setTargetTemperature: function(value, callback) {
 		this.log("setTargetTemperature");
-    callback(null);
+    if (!this._currentData) { 
+       callback("setTargetTemperature: data not yet loaded");
+    }
+    var thisTStat = this._findTStatInNexiaResponse();
+    return this._setTemp(thisTStat, value, callback);
   },
 	getTemperatureDisplayUnits: function(callback) {
 		this.log("getTemperatureDisplayUnits");
@@ -197,6 +201,36 @@ NexiaThermostat.prototype = {
 
     return newurl;
   },
+  _setTemp: function(thisTStat, value, callback) {
+      var that = this;
+      var f = value * 1.8 + 32.0;
+      // should search settings for hvac_mode and not just
+      // assume settings[0]
+
+      var key_name = Object.keys(thisTStat.features[0].actions)[0]
+      var url = thisTStat.features[0].actions[key_name].href;
+      var targetState = this._findTargetState(thisTStat);
+      var json_struct;
+      switch (targetState) {
+        case Characteristic.TargetHeatingCoolingState.AUTO:
+          json_struct = {"heat":f+2,"cool":f-2};
+        case Characteristic.TargetHeatingCoolingState.HEAT:
+          json_struct = {"heat":f};
+        default:
+          json_struct = {"cool":f};
+      }
+
+      this.log("JSON:" + json_struct); 
+      return this._put(url,json_struct)
+        .then(function (body) {
+          callback(null,value);
+          that.log("Set State!");
+          that.log(body);
+        }).catch(function(err) {
+          that.log("Error from _put to :" + url +  ":  " + err);
+        });
+    },
+
 
     _setHVACMode: function(thisTStat, value, callback) {
       var that = this;
@@ -214,7 +248,6 @@ NexiaThermostat.prototype = {
           that.log(body);
         }).catch(function(err) {
           that.log("Error from _post to :" + url +  ":  " + err);
-          callback("Error from _post to :" + url +  ":  " + err);
         });
     },
 
