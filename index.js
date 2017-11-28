@@ -1,7 +1,6 @@
 var Service, Characteristic;
 var rp = require('request-promise')
-
-
+require('request-promise').debug = true;
 
 module.exports = function(homebridge){
   Service = homebridge.hap.Service;
