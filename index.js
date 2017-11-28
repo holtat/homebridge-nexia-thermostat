@@ -243,7 +243,7 @@ NexiaThermostat.prototype = {
           callback(null,value);
           that.log("Set State!");
           that.log(body);
-          that._refreshData();
+          //that._refreshData() -- LOOPS!
         }).catch(function(err) {
           that.log("Error from _put to :" + url +  ":  " + err);
         });
@@ -264,7 +264,7 @@ NexiaThermostat.prototype = {
           callback(null,value);
           that.log("Set State!");
           that.log(body);
-          that._refreshData();
+          //that._refreshData() -- LOOPS!
         }).catch(function(err) {
           that.log("Error from _post to :" + url +  ":  " + err);
         });
