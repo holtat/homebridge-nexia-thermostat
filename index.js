@@ -157,14 +157,14 @@ NexiaThermostat.prototype = {
   },
   _get: function(url) {
     return rp({
-      url: (url.match(/::/) ? url : this.apiroute + url),
+      url: ( (url.indexOf('::') > -1) ? url : this.apiroute + url),
       headers: {'X-MobileId':  this.xMobileId, 'X-ApiKey': this.xApiKey}
     }) 
   },
   _post: function(url, body) {
     return rp({
       method: 'POST',
-      url: (url.match(/::/) ? url : this.apiroute + url),
+      url: ( (url.indexOf('::') > -1) ? url : this.apiroute + url),
       headers: {'X-MobileId':  this.xMobileId, 'X-ApiKey': this.xApiKey},
       body: body,
       json: true
@@ -173,7 +173,7 @@ NexiaThermostat.prototype = {
   _put: function(url, body) {
     return rp({
       method: 'PUT',
-      url: (url.match(/::/) ? url : this.apiroute + url),
+      url: ( (url.indexOf('::') > -1) ? url : this.apiroute + url),
       headers: {'X-MobileId':  this.xMobileId, 'X-ApiKey': this.xApiKey},
       body: body,
       json: true
