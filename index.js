@@ -157,14 +157,14 @@ NexiaThermostat.prototype = {
   },
   _get: function(url) {
     return rp({
-      url: ( (url.indexOf('::') > -1) ? url : this.apiroute + url),
+      url: this._calculateUrl(url),
       headers: {'X-MobileId':  this.xMobileId, 'X-ApiKey': this.xApiKey}
     }) 
   },
   _post: function(url, body) {
     return rp({
       method: 'POST',
-      url: ( (url.indexOf('::') > -1) ? url : this.apiroute + url),
+      url: this._calculateUrl(url),
       headers: {'X-MobileId':  this.xMobileId, 'X-ApiKey': this.xApiKey},
       body: body,
       json: true
@@ -173,14 +173,22 @@ NexiaThermostat.prototype = {
   _put: function(url, body) {
     return rp({
       method: 'PUT',
-      url: ( (url.indexOf('::') > -1) ? url : this.apiroute + url),
+      url: this._calculateUrl(url),
       headers: {'X-MobileId':  this.xMobileId, 'X-ApiKey': this.xApiKey},
       body: body,
       json: true
     }) 
   },
 
- 
+  _calculateUrl: function(url) {
+    this.log("_calculateUrl in: " + url);
+
+    var newurl = ( (url.indexOf('::') > -1) ? url : this.apiroute + url);
+    this.log("_calculateUrl our: " + newurl);
+
+    return newurl;
+  },
+
     _setHVACMode: function(thisTStat, value, callback) {
       var that = this;
       // should search settings for hvac_mode and not just
