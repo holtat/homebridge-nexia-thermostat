@@ -276,7 +276,7 @@ NexiaThermostat.prototype = {
       default:
         return "off";
     }
-  }
+  },
 
   heatingCoolingStateForConfigKey: function(configKey) {
     switch (configKey.toLowerCase()) {
