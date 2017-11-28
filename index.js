@@ -189,7 +189,7 @@ NexiaThermostat.prototype = {
         }).catch(function(err) {
           that.log("Error from _put to :" + url +  ":  " + err);
         });
-    };
+    },
 
 
   _findTStatInNexiaResponse: function() {
