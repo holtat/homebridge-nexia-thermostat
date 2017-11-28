@@ -41,6 +41,15 @@ NexiaThermostat.prototype = {
     var characteristic = this._findCurrentState(thisTStat);
     return callback(null, characteristic);
 	},
+  getTargetHeatingCoolingState: function(callback) {
+		this.log("getTargetHeatingCoolingState");
+    if (!this._currentData) { 
+       callback("getCurrentHeatingCoolingState: data not yet loaded");
+    }
+    var thisTStat = this._findTStatInNexiaResponse();
+    var characteristic = this._findTargetState(thisTStat);
+    return callback(null, characteristic);
+	},
   setTargetHeatingCoolingState: function(value, callback) {
 		this.log("setTargetHeatingCoolingState");
 	  if (!this._currentData) { 
@@ -111,7 +120,7 @@ NexiaThermostat.prototype = {
 
 		this.service
 			.getCharacteristic(Characteristic.TargetHeatingCoolingState)
-			.on('get', this.getCurrentHeatingCoolingState.bind(this))
+			.on('get', this.getTargetHeatingCoolingState.bind(this))
 			.on('set', this.setTargetHeatingCoolingState.bind(this));
 
 		this.service
@@ -195,7 +204,10 @@ NexiaThermostat.prototype = {
       // assume settings[0]
 
       var url = thisTStat.settings[0]._links.self.href;
-      return this._post(url,{"value":this.ConfigKeyForheatingCoolingState(value)})
+      var txt_value = this.ConfigKeyForheatingCoolingState(value);
+      var json_struct = {"value":txt_value};
+      this.log("JSON:" + json_struct); 
+      return this._post(url,json_struct)
         .then(function (body) {
           callback(null,value);
           that.log("Set State!");
@@ -227,7 +239,7 @@ NexiaThermostat.prototype = {
       throw new Error("The tStatId is missing");
   },
 
-  _findCurrentState: function(thisTStat) {
+  _findTargetState: function(thisTStat) {
     var rawState = "unknown";
     if (thisTStat.hasOwnProperty("zones")) {
       rawState = thisTStat.zones[0].current_zone_mode;
@@ -238,25 +250,41 @@ NexiaThermostat.prototype = {
     } else {
       this.log("no state");
     }
-    return this.heatingCoolingStateForConfigKey(rawState);
+    return this.TargetHeatingCoolingStateForConfigKey(rawState);
   },
+
+  _findCurrentState: function(thisTStat) {
+    var rawState = "unknown";
+    if (thisTStat.hasOwnProperty("zones")) {
+      rawState = thisTStat.zones[0].current_zone_mode;
+    } else if (thisTStat.hasOwnProperty("features")) {
+      // should search settings for hvac_mode and not just
+      // assume settings[0]
+      rawState = thisTStat.features[0].status;
+      this.log("_findCurrentState:" + rawState);
+    } else {
+      this.log("no state");
+    }
+    return this.CurrentHeatingCoolingStateForConfigKey(rawState);
+  },
+
   _findCurrentSetPoint: function(thisTStat) {
-    var current_state = this._findCurrentState; 
+    var target_state = this._findTargetState; 
     if (thisTStat.hasOwnProperty("zones")) {
         var zone_zero = thisTStat.zones[0];
-        if(current_state === Characteristic.TargetHeatingCoolingState.COOL) {
+        if(target_state === Characteristic.TargetHeatingCoolingState.COOL) {
            return zone_zero.setpoints.cool;
         }
-        else if(current_state === Characteristic.TargetHeatingCoolingState.HEAT) {
+        else if(target_state === Characteristic.TargetHeatingCoolingState.HEAT) {
            return zone_zero.setpoints.heat;
         }
         return zone_zero.temperature;
     } else if (thisTStat.hasOwnProperty("features")) {
         var features_node = thisTStat.features[0];
-        if(current_state === Characteristic.TargetHeatingCoolingState.COOL && features_node.hasOwnProperty("setpoint_cool")) {
+        if(target_state === Characteristic.TargetHeatingCoolingState.COOL && features_node.hasOwnProperty("setpoint_cool")) {
            return features_node.setpoint_cool;
         }
-        else if(current_state === Characteristic.TargetHeatingCoolingState.HEAT && features_node.hasOwnProperty("setpoint_heat")) {
+        else if(target_state === Characteristic.TargetHeatingCoolingState.HEAT && features_node.hasOwnProperty("setpoint_heat")) {
            return features_node.setpoint_heat;
         }
         else if(features_node.hasOwnProperty("setpoint_cool")) {
@@ -294,8 +322,7 @@ NexiaThermostat.prototype = {
         return "off";
     }
   },
-
-  heatingCoolingStateForConfigKey: function(configKey) {
+  TargetHeatingCoolingStateForConfigKey: function(configKey) {
     switch (configKey.toLowerCase()) {
       case 'auto':
         return Characteristic.TargetHeatingCoolingState.AUTO;
@@ -305,6 +332,19 @@ NexiaThermostat.prototype = {
         return Characteristic.TargetHeatingCoolingState.HEAT;
       default:
         return Characteristic.TargetHeatingCoolingState.OFF;
+    }
+  },
+
+  CurrentHeatingCoolingStateForConfigKey: function(configKey) {
+    switch (configKey.toLowerCase()) {
+      case 'auto':
+        return Characteristic.CurrentHeatingCoolingState.AUTO;
+      case 'cool':
+        return Characteristic.CurrentHeatingCoolingState.COOL;
+      case 'heat':
+        return Characteristic.CurrentHeatingCoolingState.HEAT;
+      default:
+        return Characteristic.CurrentHeatingCoolingState.OFF;
     }
   }
 };
