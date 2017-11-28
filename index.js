@@ -34,6 +34,7 @@ NexiaThermostat.prototype = {
 	},
 	// Required
 	getCurrentHeatingCoolingState: function(callback) {
+		this.log("getCurrentHeatingCoolingState");
     if (!this._currentData) { 
        callback("getCurrentHeatingCoolingState: data not yet loaded");
     }
@@ -42,6 +43,7 @@ NexiaThermostat.prototype = {
     return callback(null, characteristic);
 	},
   setTargetHeatingCoolingState: function(value, callback) {
+		this.log("setTargetHeatingCoolingState");
 		if(value === undefined) {
 			callback(); //Some stuff call this without value doing shit with the rest
 		} else {
