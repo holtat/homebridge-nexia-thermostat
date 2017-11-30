@@ -260,6 +260,9 @@ NexiaThermostat.prototype = {
         // should search settings for hvac_mode and not just
         // assume settings[0]
 
+// *** url may be undef here because the stat has gone from Off to Cool/Heat
+// and we haven't updated the data yet so we don't have the url to set it
+
         var key_name = Object.keys(thisTStat.features[0].actions)[0]
         var url = thisTStat.features[0].actions[key_name].href;
         var targetState = this._findTargetState(thisTStat);
