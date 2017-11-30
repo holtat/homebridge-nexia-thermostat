@@ -1,5 +1,8 @@
 var Service, Characteristic;
-var rp = require('request-promise')
+var rp = require('request-promise');
+var debounce = require('lodash.debounce');
+var Promise = require('bluebird');
+
 require('request-promise').debug = true;
 
 module.exports = function(homebridge){
@@ -156,18 +159,17 @@ NexiaThermostat.prototype = {
 	},
 
   _refreshData: function() {
-    var that = this;
-		this._get("houses/" + this.houseId)
+		this._get("houses/" + this.houseId).bind(this)
       .then(function (body) {
-        that.log("Refreshed Data!");
+        this.log("Refreshed Data!");
         var parse = JSON.parse(body);
         if(parse.error) {
-          that.log("There was an error fetching data: " + parse.error);
+          this.log("There was an error fetching data: " + parse.error);
           return;
         } 
-        that._currentData = parse;
+        this._currentData = parse;
 
-        that._updateData().bind(that);
+        this._updateData();
 
         /* TODO */
 
@@ -202,7 +204,7 @@ NexiaThermostat.prototype = {
 
         return;
       }).catch(function(err) {
-        that.log("Error from get: " + err);
+        this.log("Error from get: " + err);
      });
   },
   _get: function(url) {
@@ -239,7 +241,6 @@ NexiaThermostat.prototype = {
     return newurl;
   },
   _setTemp: function(thisTStat, value, callback) {
-      var that = this;
       var f = value * 1.8 + 32.0;
       // should search settings for hvac_mode and not just
       // assume settings[0]
@@ -258,24 +259,23 @@ NexiaThermostat.prototype = {
       }
 
       this.log("JSON:" + json_struct); 
-      return this._put(url,json_struct)
+      return this._put(url,json_struct).bind(this)
         .then(function (body) {
           if (callback) { 
             callback(null,value);
           }
-          that.log("Set Temp!");
-          that.log(body);
+          this.log("Set Temp!");
+          this.log(body);
           // TODO -- the body may be able to reused for refreshData to avoid hitting
           // the server again
-          that._refreshData();
+          this._refreshData();
         }).catch(function(err) {
-          that.log("Error from _put to :" + url +  ":  " + err);
+          this.log("Error from _put to :" + url +  ":  " + err);
         });
     },
 
 
     _setHVACMode: function(thisTStat, value, callback) {
-      var that = this;
       // should search settings for hvac_mode and not just
       // assume settings[0]
       var f = this._findCurrentSetPoint(thisTStat);
@@ -285,17 +285,17 @@ NexiaThermostat.prototype = {
       var txt_value = this.ConfigKeyForheatingCoolingState(value);
       var json_struct = {"value":txt_value};
       this.log("JSON:" + json_struct); 
-      return this._post(url,json_struct)
+      return this._post(url,json_struct).bind(this)
         .then(function (body) {
           callback(null,value);
-          that.log("Set State!");
-          that.log(body);
+          this.log("Set State!");
+          this.log(body);
           // Since data is out of sync (HVAC state is wrong the set temp will fail)
           // If we can use the body of the response to update the current Data
           // this will fix it
-          return that._setTemp(thisTStat, c);
+          return this._setTemp(thisTStat, c);
         }).catch(function(err) {
-          that.log("Error from _post to :" + url +  ":  " + err);
+          this.log("Error from _post to :" + url +  ":  " + err);
         });
     },
 
