@@ -108,7 +108,7 @@ NexiaThermostat.prototype = {
         }
         var thisTStat = this._findTStatInNexiaResponse();
         this.name = thisTStat.name;
-        callback(error, this.name);
+        callback(null, this.name);
     },
 
     getServices: function() {
