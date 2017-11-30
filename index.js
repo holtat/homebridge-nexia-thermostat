@@ -270,10 +270,12 @@ NexiaThermostat.prototype = {
                     "heat": f + 3,
                     "cool": f - 3
                 };
+                break;
             case Characteristic.TargetHeatingCoolingState.HEAT:
                 json_struct = {
                     "heat": f
                 };
+                break;
             default:
                 json_struct = {
                     "cool": f
