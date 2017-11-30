@@ -240,7 +240,16 @@ NexiaThermostat.prototype = {
 
     return newurl;
   },
+
   _setTemp: function(thisTStat, value, callback) {
+      this.log("We are setting temp though _setTempDebounced to: " + value);
+      this.setTargetTemperatureDebounced(thisTStat, value, function() {
+            this.log('Temperature set to ' + value);
+              }.bind(this));
+      return Promise.resolve().asCallback(callback);
+
+  },
+  _setTempDebounced: debounce(function(thisTStat, value, callback) {
       var f = value * 1.8 + 32.0;
       // should search settings for hvac_mode and not just
       // assume settings[0]
@@ -272,7 +281,7 @@ NexiaThermostat.prototype = {
         }).catch(function(err) {
           this.log("Error from _put to :" + url +  ":  " + err);
         });
-    },
+     }, 5000);
 
 
     _setHVACMode: function(thisTStat, value, callback) {
