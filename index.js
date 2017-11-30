@@ -333,7 +333,7 @@ NexiaThermostat.prototype = {
             if (all_items[index].type.indexOf('thermostat') > -1) {
                 tStatId++;
                 if (tStatId === want_tStatId) {
-                    console.log(all_items[index]);
+        //            console.log(all_items[index]);
                     return all_items[index];
                 }
             }
