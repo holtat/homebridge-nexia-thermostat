@@ -40,7 +40,7 @@ NexiaThermostat.prototype = {
         if (!this._currentData) {
             callback("getCurrentHeatingCoolingState: data not yet loaded");
         }
-        var thisTStat = this._findTStatInNexiaResponse().bind(this);
+        var thisTStat = this._findTStatInNexiaResponse();
         var characteristic = this._findCurrentState(thisTStat);
         return callback(null, characteristic);
     },
@@ -49,7 +49,7 @@ NexiaThermostat.prototype = {
         if (!this._currentData) {
             callback("getCurrentHeatingCoolingState: data not yet loaded");
         }
-        var thisTStat = this._findTStatInNexiaResponse().bind(this);
+        var thisTStat = this._findTStatInNexiaResponse();
         var characteristic = this._findTargetState(thisTStat);
         return callback(null, characteristic);
     },
@@ -58,16 +58,16 @@ NexiaThermostat.prototype = {
         if (!this._currentData) {
             callback("setTargetHeatingCoolingState: data not yet loaded");
         }
-        var thisTStat = this._findTStatInNexiaResponse().bind(this);
-        return this._setHVACMode(thisTStat, value, callback).bind(this);
+        var thisTStat = this._findTStatInNexiaResponse();
+        return this._setHVACMode(thisTStat, value, callback);
     },
     getCurrentTemperature: function(callback) {
         this.log("getCurrentTemperature");
         if (!this._currentData) {
             callback("getCurrentHeatingCoolingState: data not yet loaded");
         }
-        var thisTStat = this._findTStatInNexiaResponse().bind(this);
-        var f = this._findCurrentTemp(thisTStat).bind(this);
+        var thisTStat = this._findTStatInNexiaResponse();
+        var f = this._findCurrentTemp(thisTStat);
         var c = (f - 32.0) / 1.8;
         callback(null, c);
     },
@@ -76,8 +76,8 @@ NexiaThermostat.prototype = {
         if (!this._currentData) {
             callback("getCurrentHeatingCoolingState: data not yet loaded");
         }
-        var thisTStat = this._findTStatInNexiaResponse().bind(this);
-        var f = this._findCurrentSetPoint(thisTStat).bind(this);
+        var thisTStat = this._findTStatInNexiaResponse();
+        var f = this._findCurrentSetPoint(thisTStat);
         var c = (f - 32.0) / 1.8;
         callback(null, c);
     },
@@ -89,8 +89,8 @@ NexiaThermostat.prototype = {
         // TODO: We need to debounce this so there is a 3s delay before calling
         // this in case they are sliding
 
-        var thisTStat = this._findTStatInNexiaResponse().bind(this);
-        return this._setTemp(thisTStat, value, callback).bind(this);
+        var thisTStat = this._findTStatInNexiaResponse();
+        return this._setTemp(thisTStat, value, callback);
     },
     getTemperatureDisplayUnits: function(callback) {
         this.log("getTemperatureDisplayUnits");
@@ -106,7 +106,7 @@ NexiaThermostat.prototype = {
         if (!this._currentData) {
             callback("getName: data not yet loaded");
         }
-        var thisTStat = this._findTStatInNexiaResponse().bind(this);
+        var thisTStat = this._findTStatInNexiaResponse();
         this.name = thisTStat.name;
         callback(error, this.name);
     },
@@ -169,7 +169,7 @@ NexiaThermostat.prototype = {
                 }
                 this._currentData = parse;
 
-                this._updateData().bind(this);
+                this._updateData();
 
                 /* TODO */
 
@@ -270,8 +270,8 @@ NexiaThermostat.prototype = {
         switch (targetState) {
             case Characteristic.TargetHeatingCoolingState.AUTO:
                 json_struct = {
-                    "heat": f + 2,
-                    "cool": f - 2
+                    "heat": f + 3,
+                    "cool": f - 3
                 };
             case Characteristic.TargetHeatingCoolingState.HEAT:
                 json_struct = {
@@ -303,7 +303,7 @@ NexiaThermostat.prototype = {
     _setHVACMode: function(thisTStat, value, callback) {
         // should search settings for hvac_mode and not just
         // assume settings[0]
-        var f = this._findCurrentSetPoint(thisTStat).bind(this);
+        var f = this._findCurrentSetPoint(thisTStat);
         var c = (f - 32.0) / 1.8;
 
         var url = thisTStat.settings[0]._links.self.href;
@@ -320,7 +320,7 @@ NexiaThermostat.prototype = {
                 // Since data is out of sync (HVAC state is wrong the set temp will fail)
                 // If we can use the body of the response to update the current Data
                 // this will fix it
-                return this._setTemp(thisTStat, c).bind(this);
+                return this._setTemp(thisTStat, c);
             }).catch(function(err) {
                 this.log("Error from _post to :" + url + ":  " + err);
             });
