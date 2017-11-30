@@ -252,7 +252,7 @@ NexiaThermostat.prototype = {
 
     _setTemp: function(thisTStat, value, callback) {
         this.log("We are setting temp though _setTempDebounced to: " + value);
-        this.setTargetTemperatureDebounced(thisTStat, value, function() {
+        this._setTempDebounced(thisTStat, value, function() {
             this.log('Temperature set to ' + value);
         }.bind(this));
         return Promise.resolve().asCallback(callback);
