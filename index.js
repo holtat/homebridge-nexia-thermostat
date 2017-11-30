@@ -3,7 +3,7 @@ var rp = require('request-promise');
 var debounce = require('lodash.debounce');
 var Promise = require('bluebird');
 
-require('request-promise').debug = true;
+require('request-debug')(rp);
 
 module.exports = function(homebridge) {
     Service = homebridge.hap.Service;

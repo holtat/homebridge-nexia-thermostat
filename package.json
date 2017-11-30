@@ -1,6 +1,6 @@
 {
 	"name": "homebridge-nexia-thermostat",
-	"version": "0.0.31",
+	"version": "0.0.32",
 	"description": "Nexia Thermostat plugin for homebridge: https://github.com/crizzwald/homebridge-nexia-thermostat",
 	"keywords": [
 		"homebridge-plugin"
@@ -16,6 +16,7 @@
 	"dependencies": {
 		"request": "^2.81.0",
     "request-promise": "^0.4.3",
+    "request-debug": "^0.2.0",
     "commander": "^2.12.2",
     "lodash.debounce": "^4.0.8",
     "bluebird": "^3.5.1"
