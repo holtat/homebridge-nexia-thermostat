@@ -242,12 +242,7 @@ NexiaThermostat.prototype = {
     },
 
     _calculateUrl: function(url) {
-        this.log("_calculateUrl in: " + url);
-
-        var newurl = (url.indexOf('http://') == 0 || url.indexOf('https://') == 0) ? url : (this.apiroute + url);
-        this.log("_calculateUrl out: " + newurl);
-
-        return newurl;
+        return (url.indexOf('http://') == 0 || url.indexOf('https://') == 0) ? url : (this.apiroute + url);
     },
 
     _setTemp: function(thisTStat, value, callback) {
@@ -311,12 +306,12 @@ NexiaThermostat.prototype = {
         var json_struct = {
             "value": txt_value
         };
-        this.log("JSON:" + json_struct);
+        //this.log("JSON:" + json_struct);
         return this._post(url, json_struct).promise().bind(this)
             .then(function(body) {
                 callback(null, value);
-                this.log("Set State!");
-                this.log(body);
+                //this.log("Set State!");
+                //this.log(body);
                 // Since data is out of sync (HVAC state is wrong the set temp will fail)
                 // If we can use the body of the response to update the current Data
                 // this will fix it
