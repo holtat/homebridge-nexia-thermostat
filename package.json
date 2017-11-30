@@ -17,7 +17,7 @@
 		"request": "^2.81.0",
     "request-promise": "^0.4.3",
     "commander": "^2.12.2",
-    "lodash": "^4.17.4",
+    "lodash.debounce": "^4.0.8",
     "bluebird": "^3.5.1"
 	},
 	"engines": {
