@@ -281,7 +281,7 @@ NexiaThermostat.prototype = {
         }).catch(function(err) {
           this.log("Error from _put to :" + url +  ":  " + err);
         });
-     }, 5000);
+     }, 5000),
 
 
     _setHVACMode: function(thisTStat, value, callback) {
