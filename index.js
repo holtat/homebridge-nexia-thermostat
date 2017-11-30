@@ -262,6 +262,7 @@ NexiaThermostat.prototype = {
         var key_name = Object.keys(thisTStat.features[0].actions)[0]
         var url = thisTStat.features[0].actions[key_name].href;
         var targetState = this._findTargetState(thisTStat);
+        this.log("_findTargetState: " + targetState);
         var json_struct;
         switch (targetState) {
             case Characteristic.TargetHeatingCoolingState.AUTO:
