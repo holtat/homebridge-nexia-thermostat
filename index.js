@@ -42,6 +42,7 @@ NexiaThermostat.prototype = {
         }
         var thisTStat = this._findTStatInNexiaResponse();
         var characteristic = this._findCurrentState(thisTStat);
+        this.log("current State: " + characteristic);
         return callback(null, characteristic);
     },
     getTargetHeatingCoolingState: function(callback) {
