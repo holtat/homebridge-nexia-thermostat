@@ -281,12 +281,13 @@ NexiaThermostat.prototype = {
         this.log("JSON:" + json_struct);
         return this._put(url, json_struct).promise().bind(this)
             .then(function(body) {
-                if (callback) {
+              this.log("Set Temp!");
+                this.log(body);
+  
+              if (callback) {
                     callback(null, value);
                 }
-                this.log("Set Temp!");
-                this.log(body);
-                // TODO -- the body may be able to reused for refreshData to avoid hitting
+                        // TODO -- the body may be able to reused for refreshData to avoid hitting
                 // the server again
                 this._refreshData();
             }).catch(function(err) {
