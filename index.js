@@ -419,10 +419,19 @@ NexiaThermostat.prototype = {
     },
 
     _updateData: function() {
-        this.service.getCharacteristic(Characteristic.CurrentTemperature).getValue();
-        this.service.getCharacteristic(Characteristic.TargetTemperature).getValue();
-        this.service.getCharacteristic(Characteristic.CurrentHeatingCoolingState).getValue();
-        this.service.getCharacteristic(Characteristic.TargetHeatingCoolingState).getValue();
+        var thisTStat = this._findTStatInNexiaResponse();
+
+        var f = this._findCurrentTemp(thisTStat);
+        var c = (f - 32.0) / 1.8;
+
+        this.service.setCharacteristic(Characteristic.CurrentTemperature, c);
+      
+        f = this._findCurrentSetPoint(thisTStat);
+        c = (f - 32.0) / 1.8;
+
+        this.service.setCharacteristic(Characteristic.TargetTemperature, c);
+        this.service.setCharacteristic(Characteristic.CurrentHeatingCoolingState, this._findCurrentState(thisTStat));
+        this.service.setCharacteristic(Characteristic.TargetHeatingCoolingState, this._findTargetState(thisTStat));
         return 1;
     },
 
