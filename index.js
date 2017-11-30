@@ -159,7 +159,7 @@ NexiaThermostat.prototype = {
 	},
 
   _refreshData: function() {
-		this._get("houses/" + this.houseId).bind(this)
+		this._get("houses/" + this.houseId).promise().bind(this)
       .then(function (body) {
         this.log("Refreshed Data!");
         var parse = JSON.parse(body);
@@ -259,7 +259,7 @@ NexiaThermostat.prototype = {
       }
 
       this.log("JSON:" + json_struct); 
-      return this._put(url,json_struct).bind(this)
+      return this._put(url,json_struct).promise().bind(this)
         .then(function (body) {
           if (callback) { 
             callback(null,value);
@@ -285,7 +285,7 @@ NexiaThermostat.prototype = {
       var txt_value = this.ConfigKeyForheatingCoolingState(value);
       var json_struct = {"value":txt_value};
       this.log("JSON:" + json_struct); 
-      return this._post(url,json_struct).bind(this)
+      return this._post(url,json_struct).promise().bind(this)
         .then(function (body) {
           callback(null,value);
           this.log("Set State!");
