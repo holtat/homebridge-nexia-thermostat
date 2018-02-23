@@ -8,21 +8,33 @@
 	"bugs": {
 		"url": "https://github.com/crizzwald/homebridge-nexia-thermostat/issues"
 	},
+	"scripts": {
+		"build": "babel src -d lib",
+		"preinstall:global": "rm -rf /usr/local/lib/node_modules/homebridge-nexia-thermostat",
+		"install:global": "(cd .. && cp -r -i homebridge-nexia-thermostat /usr/local/lib/node_modules)"
+	},
+	"main": "lib/index.js",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
 		"url": "git@github.com:crizzwald/homebridge-nexia-thermostat.git"
 	},
-	"dependencies": {
-		"request": "^2.81.0",
-    "request-promise": "^0.4.3",
-    "request-debug": "^0.2.0",
-    "commander": "^2.12.2",
-    "lodash.debounce": "^4.0.8",
-    "bluebird": "^3.5.1"
-	},
 	"engines": {
 		"node": ">=4.3.2",
 		"homebridge": ">=0.2.0"
+	},
+	"dependencies": {
+		"axios": "0.17.1",
+		"normalizr": "3.2.4",
+		"redux": "3.7.2",
+		"redux-thunk": "2.2.0"
+	},
+	"devDependencies": {
+		"babel-cli": "6.26.0",
+		"babel-plugin-transform-class-properties": "6.24.1",
+		"babel-plugin-transform-es2015-destructuring": "6.23.0",
+		"babel-plugin-transform-es2015-parameters": "6.24.1",
+		"babel-plugin-transform-object-rest-spread": "6.26.0",
+		"babel-preset-env": "1.6.1"
 	}
 }
