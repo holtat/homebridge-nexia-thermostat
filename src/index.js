@@ -53,7 +53,8 @@ class NexiaThermostat {
                     [Characteristic.TargetHeatingCoolingState.HEAT]: 'HEAT',
                     [Characteristic.TargetHeatingCoolingState.COOL]: 'COOL',
                     [Characteristic.TargetHeatingCoolingState.AUTO]: 'AUTO'
-                }[value])).then(() => callback(null));
+                }[value])).then(() => callback(null))
+                .catch(error => this.log(error));
             });
 
         service
@@ -82,7 +83,8 @@ class NexiaThermostat {
 
                 store.dispatch(setTargetTemperatureRange({
                     [zone.current_zone_mode.toLowerCase()]: temperature
-                })).then(() => callback());
+                })).then(() => callback())
+                .catch(error => this.log(error));
             })
 
         service
@@ -96,8 +98,11 @@ class NexiaThermostat {
             .on('set', (value, callback) => {
                 const temperature = value * 1.8 + 32;
 
+                this.log('COOL', temperature);
+
                 store.dispatch(setTargetTemperatureRange({ cool: temperature }))
-                    .then(() => callback());
+                    .then(() => callback())
+                    .catch(error => this.log(error));
             })
             .setProps({
                 minValue: (60 - 32.0) / 1.8,
@@ -116,8 +121,11 @@ class NexiaThermostat {
             .on('set', (value, callback) => {
                 const temperature = value * 1.8 + 32;
 
+                this.log('HEAT', temperature);
+
                 store.dispatch(setTargetTemperatureRange({ heat: temperature }))
-                    .then(() => callback());
+                    .then(() => callback())
+                    .catch(error => this.log(error));
             })
             .setProps({
                 minValue: Math.round((55 - 32.0) / 1.8),
